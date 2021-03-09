@@ -30,8 +30,8 @@ class _SafeDataLoaderCaller(type):
         cls.sequential = data.dataloader.SequentialSampler
         cls.random = data.dataloader.RandomSampler
 
-        def safe_sampler_callable(sampler_cls, dataset):
-            return SafeSampler(dataset, sampler_cls(dataset))
+        def safe_sampler_callable(sampler_cls, dataset, **kwargs):
+            return SafeSampler(dataset, sampler_cls(dataset, **kwargs))
 
         data.dataloader.SequentialSampler = partial(
             safe_sampler_callable, data.SequentialSampler
@@ -138,7 +138,7 @@ class SafeDataLoader(with_metaclass(_SafeDataLoaderCaller, data.DataLoader)):
         super(SafeDataLoader, self).__init__(dataset, **kwargs)
 
         self.safe_dataset = self.dataset
-        self.dataset = _OriginalDataset(self.safe_dataset)
+        # self.dataset = _OriginalDataset(self.safe_dataset)
 
         if self.collate_fn is default_collate:
             self.collate_fn = SafeDataLoader._safe_default_collate
