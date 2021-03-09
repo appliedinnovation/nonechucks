@@ -82,5 +82,8 @@ class SafeSampler(torch.utils.data.sampler.Sampler):
             except IndexError:
                 raise StopIteration
 
+    def __len__(self):
+        return len(self.sampler)
+
     # For Python2 compatibility
     next = __next__
